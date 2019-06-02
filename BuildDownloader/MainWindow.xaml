@@ -1,0 +1,108 @@
+﻿<Window x:Class="BuildDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="200" Width="1000" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0">
+            <TabItem Header="Session List">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                        <TextBlock Text="Path"     Margin="2" Padding="0,2"/>
+                        <TextBox Text="{Binding OutputPath}" MinWidth="100" Margin="2"/>
+                        <Button x:Name="btnBrowse" Margin="2,1,0,2" Width="20" ToolTip="Select Folder" Content="..." />
+                        <Button x:Name="btnOpen"   Margin="2,1,0,2" Width="60" ToolTip="Open Folder" Content="Open"/>
+                        <Button Name="btnLoad"     Margin="2,1,0,2" Width="60" ToolTip="Load from file" Content="Load" IsEnabled="{Binding CanLoad}" />
+                        <TextBlock Text="URL" Margin="2" Padding="2"/>
+                        <TextBox Text="{Binding URL}" MinWidth="100" Margin="2"/>
+                        <Button Name="btnDownload" Margin="2,1,0,2" Width="60" Content="Download" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        <TextBlock Text="Filter" Style="{StaticResource tbHighlight}"/>
+                        <TextBlock Text="Session Code" Margin="2" Padding="0,2"/>
+                        <TextBox Name="tbSessionCode" MinWidth="50" Margin="2"/>
+                        <CheckBox Name="chkSlides" Content="Slides" Margin="2,5,4,0" Padding="0"/>
+                        <CheckBox Name="chkVideos" Content="Videos" Margin="2,5,4,0" Padding="0"/>
+
+                        <Button x:Name="btnClearFilters" Margin="2,1,0,2" Width="70" ToolTip="Clear Filters" Content="Clear Filters"/>
+
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding DV}" x:Name="dgMain" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" 
+                IsReadOnly="True" EnableRowVirtualization="True" AutoGenerateColumns="False" Grid.Row="2" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Session Code" Binding="{Binding sessionCode}"/>
+                            <DataGridTextColumn Header="Session Type" Binding="{Binding sessionType}"/>
+                            <DataGridTextColumn Header="Level" Binding="{Binding level}"/>
+                            <DataGridTextColumn Header="Title" Binding="{Binding title}"/>
+                            <DataGridCheckBoxColumn Header="Slides" Binding="{Binding hasSlides}"/>
+                            <DataGridCheckBoxColumn Header="Video"  Binding="{Binding hasVideo}"/>
+                            <DataGridTextColumn Header="Minutes" Binding="{Binding durationInMinutes}"/>
+                            <DataGridTextColumn Header="Updated" Binding="{Binding lastUpdate, StringFormat=yyyy.MM.dd HH:mm:ss}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Template">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3">
+                        <TextBlock Text=" Clicking a field in the list will copy it to the clipboard. Paste it into the HTML template area."/>
+                    </StackPanel>
+                    <ListBox Name="lbFields" Grid.Row="1" ItemsSource="{Binding Fields}" />
+                    <GridSplitter Grid.Row="1" Grid.Column="1" Width="4" Background="BlueViolet" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" />
+                    <TextBox Name="tbTemplate" Grid.Row="1" Grid.Column="2" AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True" TextWrapping="WrapWithOverflow" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <!--<GridSplitter Grid.Row="1" Height="4" Background="BlueViolet" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" />-->
+
+        <GridSplitter Grid.Row="0" Grid.RowSpan="6" Grid.Column="1" Width="4" Background="BlueViolet" ResizeBehavior="PreviousAndNext" VerticalAlignment="Stretch" />
+
+        <TabControl Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" >
+            <TabItem Header="Sessions Document" >
+                <WebBrowser x:Name="web"/>
+            </TabItem>
+        </TabControl>
+
+
+        <Grid Grid.Row="2" Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Status}" Foreground="Black" Margin="4" Grid.ColumnSpan="2"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Text="For selected sessions:" Style="{StaticResource tbHighlight}"/>
+                <Button x:Name="btnGetSlides"    Margin="2,1,0,2" Width="70" ToolTip="Download Slides" Content="Get Slides"/>
+                <Button x:Name="btnGetVideos"    Margin="2,1,0,2" Width="70" ToolTip="Download Videos" Content="Get Videos"/>
+                <Button x:Name="btnCreateMarkup" Margin="2,1,0,2" Width="90" ToolTip="Create Markup" Content="Create Web"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

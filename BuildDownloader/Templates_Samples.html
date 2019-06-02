@@ -1,0 +1,41 @@
+﻿<!--Fields:
+sessionId, sessionCode, title, sortRank, level, sessionTypeId, sessionType,
+durationInMinutes,lastUpdate,visibleInSessionListing,slideDeck,downloadVideoLink,
+captionFileLink,onDemandThumbnail,hasSlides,hasVideo,hasChanged,desciption
+-->
+<!-- Table Format -->
+<template>
+    <table border=1>
+        <tr>
+            <td><b>{sessionCode}</b></td>
+            <td><b>{title}</b></td>
+        </tr>
+        <tr>
+            <td>{sessionType}<br />{level}</td>
+            <td>{desciption}</td>
+        </tr>
+        <tr>
+            <td>Resources</td>
+            <td>Video {durationInMinutes} min {downloadVideoLink} [hasSlides]</td>
+        </tr>
+        <tr><td>Notes</td><td></td></tr>
+    </table>
+</template>
+
+<!-- Another Table -->
+<template>
+    <table border=1>
+        <tr><td><b>{sessionCode}</b></td><td><b>{title}</b></td></tr>
+        <tr><td>{sessionType} {level}</td><td>{desciption}</td></tr>
+        <tr><td>Video</td><td>{downloadVideoLink} {durationInMinutes} min</td></tr>
+        <tr><td>Slides</td><td>{slideDeck}</td></tr>
+        <tr><td>Notes</td></tr>
+    </table>
+</template>
+ 
+<template>
+    <div><b>{sessionCode}</b> - <b>{title}</b> {sessionType} {level}</div>
+    <div>{desciption}</div>
+    <div>Video {durationInMinutes} min {downloadVideoLink}</div>
+    <div>[hasSlides]</div>
+</template>
