@@ -41,6 +41,7 @@ namespace BuildDownloader
             this.CanLoad = File.Exists(Path.Combine(this.outputPath, Res.SessionData));
         }
 
+ 
         internal void InitUI()
         {
             this.ui.tbTemplate.Text = File.ReadAllText(Res.ResourceFile);
@@ -51,6 +52,7 @@ namespace BuildDownloader
         internal MainWindow ui;
 
         private string filterSessionCode = "";
+        private string filterTitle="";
         private string filterSlides = "";
         private string filterVideos = "";
 
@@ -283,6 +285,21 @@ namespace BuildDownloader
             }
         }
 
+        internal void TitelChanged(object s)
+        {
+            try
+            {
+                var ui = (TextBox)s;
+                this.filterTitle = ui.Text;
+                ApplyFilter();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex);
+            }
+        }
+
+
         internal void SlidesClicked(object s)
         {
             try
@@ -339,6 +356,11 @@ namespace BuildDownloader
                         sb.Append($"sessionCode LIKE '%{this.filterSessionCode}%'");
                         delim = " AND ";
                     }
+                    if (this.filterTitle.Length > 0)
+                    {
+                        sb.Append($"title LIKE '%{this.filterTitle}%'");
+                        delim = " AND ";
+                    }
                     if (this.filterSlides.Length > 0)
                     {
                         sb.Append($"{delim}{this.filterSlides}");
@@ -364,6 +386,7 @@ namespace BuildDownloader
         internal void ClearFilters()
         {
             this.ui.tbSessionCode.Text = "";
+            this.ui.tbTitle.Text = "";
             this.ui.chkSlides.IsChecked = false;
             this.ui.chkVideos.IsChecked = false;
             this.filterSlides = "";

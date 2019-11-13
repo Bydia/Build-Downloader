@@ -39,6 +39,8 @@
                         <TextBlock Text="Filter" Style="{StaticResource tbHighlight}"/>
                         <TextBlock Text="Session Code" Margin="2" Padding="0,2"/>
                         <TextBox Name="tbSessionCode" MinWidth="50" Margin="2"/>
+                        <TextBlock Text="Title" Margin="2" Padding="0,2"/>
+                        <TextBox Name="tbTitle" MinWidth="50" Margin="2"/>
                         <CheckBox Name="chkSlides" Content="Slides" Margin="2,5,4,0" Padding="0"/>
                         <CheckBox Name="chkVideos" Content="Videos" Margin="2,5,4,0" Padding="0"/>
 
