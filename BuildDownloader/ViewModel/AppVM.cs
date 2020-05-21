@@ -19,6 +19,13 @@ namespace BuildDownloader
     {
         public AppVM()
         {
+            string type = Res.DEFAULT_TYPE;
+            if (ConfigurationManager.AppSettings["DefaultType"]?.Length > 0)
+            {
+                type = ConfigurationManager.AppSettings["DefaultType"];
+            }
+            this.Type = Convert.ToInt32(type);
+
             string url = Res.DEFAULT_URL;
             if (ConfigurationManager.AppSettings["DefaultURL"]?.Length > 0)
             {
@@ -41,12 +48,12 @@ namespace BuildDownloader
             this.CanLoad = File.Exists(Path.Combine(this.outputPath, Res.SessionData));
         }
 
- 
+
         internal void InitUI()
         {
             this.ui.tbTemplate.Text = File.ReadAllText(Res.ResourceFile);
         }
-        
+
 
         #region Fields
         internal MainWindow ui;
@@ -79,6 +86,7 @@ namespace BuildDownloader
             set { SetProperty(ref this.status, value); }
         }
 
+        public int Type=1;
 
         private string url = Res.DEFAULT_URL;
         public string URL
@@ -149,11 +157,12 @@ namespace BuildDownloader
             bool hasVideo = false;
             bool hasChanged = false;
             string d;
+            DataRow r;
 
             c = new HttpClient();
 
             json = await c.GetStringAsync(this.url);
-            json2 = json.Replace("OMG", "").Replace("\\\"\\\"","");        //Cleanup
+            json2 = json.Replace("OMG", "").Replace("\\\"\\\"", "");        //Cleanup
             this.Status = " Processing session data...";
             o = Tool.JsonConvertToClass<dynamic>(json2);
             Tool.CreateFolder(this.outputPath);
@@ -165,34 +174,45 @@ namespace BuildDownloader
                 i++;
                 try
                 {
-                    hasSlides = item.slideDeck.ToString().Length > 0;
-                    hasVideo = item.downloadVideoLink.ToString().Length > 0;
+                    hasSlides = item.slideDeck?.ToString().Length > 0;
+                    if (item.downloadVideoLink != null)
+                    {
+                        hasVideo = item.downloadVideoLink.ToString().Length > 0;
+
+                    }
                     if (item.description.ToString().Contains("â€™"))
                     {
                         //TODO: Find a way to remove unwanted characters
                         d = item.description.ToString().Replace("’", "'").Replace("â€™", "'");
                     }
-                    ds.Tables["B"].Rows.Add(new object[]
+
+                    r = ds.Tables["B"].NewRow();
+
+                    r["sessionId"] = item.sessionId;
+                    r["sessionCode"] = item.sessionCode;
+                    r["title"] = item.title;
+                    r["sortRank"] = item.sortRank;
+                    r["level"] = item.level;
+                    r["sessionTypeId"] = item.sessionTypeId;
+                    r["sessionType"] = item.sessionType;
+                    r["durationInMinutes"] = item.durationInMinutes;
+                    r["lastUpdate"] = item.lastUpdate;
+                    r["visibleInSessionListing"] = item.visibleInSessionListing;
+                    r["slideDeck"] = item.slideDeck;
+
+                    if (this.Type == 1)
                     {
-                        item.sessionId,
-                        item.sessionCode,
-                        item.title,
-                        item.sortRank,
-                        item.level,
-                        item.sessionTypeId,
-                        item.sessionType,
-                        item.durationInMinutes,
-                        item.lastUpdate,
-                        item.visibleInSessionListing,
-                        item.slideDeck,
-                        item.downloadVideoLink,
-                        item.captionFileLink,
-                        item.onDemandThumbnail,
-                        hasSlides,
-                        hasVideo,
-                        hasChanged,
-                        item.description
-                    });
+                        r["downloadVideoLink"] = item.downloadVideoLink;
+                        r["onDemandThumbnail"] = item.onDemandThumbnail;
+                    }
+                    r["captionFileLink"] = item.captionFileLink;
+                    r["hasSlides"] = hasSlides;
+                    r["hasVideo"] = hasVideo;
+                    r["hasChanged"] = hasChanged;
+                    r["desciption"] = item.description;
+
+                    ds.Tables["B"].Rows.Add(r);
+
                     Trace.WriteLine($"INF {i} {item.sessionId}");
                 }
                 catch (Exception ex)

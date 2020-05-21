@@ -7,6 +7,7 @@
     {
         public static string DEFAULT_TITLE = "Build Downloader";
 
+        public const string DEFAULT_TYPE = "1";
         public const string DEFAULT_URL = "https://api.mybuild.techcommunity.microsoft.com/api/session/all";
 
         public const string SessionJson ="Session.json";
